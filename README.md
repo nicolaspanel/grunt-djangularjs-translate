@@ -1,5 +1,3 @@
-# grunt-djangularjs-translate
-
 Grunt tasks to automatically extract translations from your [djangularjs](https://github.com/nicolaspanel/djangularjs) project
 
 ##Status
@@ -7,6 +5,8 @@ Grunt tasks to automatically extract translations from your [djangularjs](https:
 Under active development
 
 [![NPM](https://nodei.co/npm/grunt-djangularjs-translate.png)](https://nodei.co/npm/grunt-djangularjs-translate/)
+[![Build Status](https://travis-ci.org/nicolaspanel/grunt-djangularjs-translate.png)](https://travis-ci.org/nicolaspanel/grunt-djangularjs-translate)
+
 
 ## Getting Started
 
