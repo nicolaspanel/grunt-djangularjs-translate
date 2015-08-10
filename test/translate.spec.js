@@ -81,6 +81,7 @@ describe('translate task', function () {
         beforeEach(function (done) {
             exec('grunt translate:en_fr_unsafe', execOptions, done);
         });
+
         it('should have generated a json file for each module | language', function () {
             helpers.assertExists('public/module0/i18n/en.json');
             helpers.assertExists('public/module0/i18n/fr.json');

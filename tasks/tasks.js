@@ -37,7 +37,7 @@ module.exports = function (grunt) {
                 // create pairs for each language
                 var moduleName = pair[0], foundKeys = pair[1];
 
-                // cleanup keys
+                grunt.log.debug('check keys');
                 foundKeys = _.uniq(foundKeys);
 
                 var hidden = _
@@ -52,6 +52,7 @@ module.exports = function (grunt) {
                 if (!_.isEmpty(hidden)){
                     grunt.fail.warn('Following keys are hidden by one ore more namespace(s): ' + hidden.join(', '));
                 }
+                grunt.log.debug('Keys are ok');
 
                 return memo.concat(_.map(options.lang, function (lang) { return [moduleName, foundKeys, lang];  }));
             }, [])
@@ -69,7 +70,7 @@ module.exports = function (grunt) {
                 }
 
                 newTranslations = _.merge({}, lib.nestify(foundKeys), jsonTranslations);
-
+                grunt.log.debug(format('Save translations for module "{}" and language "{}"', moduleName, lang));
                 grunt.file.write(pathToJsonFile, JSON.stringify(newTranslations, null, 4));
                 grunt.file.write(pathToJSFile, lib.renderJS({
                     moduleName: moduleName,
