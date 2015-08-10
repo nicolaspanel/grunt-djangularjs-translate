@@ -13,20 +13,15 @@
     "assert": "~1.1.1",
     "expect.js": "^0.3.1",
     "grunt": "~0.4.0",
-    "handlebars": "^2.0.0",
     "grunt-bump": "0.0.13",
     "grunt-contrib-clean": "^0.5.0",
     "grunt-contrib-copy": "^0.5.0",
     "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-nodeunit": "~0.1.2",
     "grunt-markdox": "^0.1.0",
     "grunt-simple-mocha": "^0.4.0",
     "mocha": "^2.2.5",
     "ncp": "^2.0.0",
     "rimraf": "^2.4.2"
-  },
-  "peerDependencies": {
-    "grunt": "~0.4.0"
   },
   "repository": {
     "type": "git",
@@ -46,16 +41,9 @@
   "bugs": {
     "url": "https://github.com/nicolaspanel/grunt-djangularjs-translate/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/nicolaspanel/grunt-djangularjs-translate/blob/master/LICENSE"
-    }
-  ],
   "readmeFilename": "README.md",
   "dependencies": {
-    "flat": "^1.2.0",
-    "json-stable-stringify": "^1.0.0",
+    "handlebars": "^2.0.0",
     "load-grunt-tasks": "^3.2.0",
     "lodash": "~2.4.1",
     "string-format": "^0.5.0",
