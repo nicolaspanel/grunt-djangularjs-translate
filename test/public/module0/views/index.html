@@ -1,40 +1,57 @@
+
+<section>
 <!--
   TEST CASE : filter in curly-brackets using double quote and spaces
   see http://angular-translate.github.io/docs/#/guide/04_using-translate-filter
 -->
-<span >{{"MODULE0_FILTER_QB_DQ" | translate }}</span>
-<span >{{'MODULE0_FILTER_QB_SQ' | translate }}</span>
-<span >{{'MODULE0_FILTER_QB_SQ_{name}' | translate:{name: 'toto'} }}</span>
-<span >{{'MODULE0_FILTER_QB_SQ_{}' | translate | format:'toto'} }}</span>
+    <span >{{"MODULE0_FILTER_QB_DQ" | translate }}</span>
+    <span >{{'MODULE0_FILTER_QB_SQ' | translate }}</span>
+    <span >{{'MODULE0_FILTER_QB_SQ_{name}' | translate:{name: 'toto'} }}</span>
+    <span >{{'MODULE0_FILTER_QB_SQ_{}' | translate | format:'toto'} }}</span>
 
-<!--
-  TEST CASE 02: filter in expression
--->
-<span ng-bind="'MODULE0_EXPRESSION_SQ' |translate"></span>
-<span ng-bind="'MODULE0_EXPRESSION_QB_SQ_{name}'| translate:{name: 'toto'} "></span>
-<span ng-bind-html="'MODULE0_EXPRESSION_QB_SQ_{}' | translate | format:'toto' | safe} "></span>
+    <!--
+      TEST CASE 02: filter in expression
+    -->
+    <span ng-bind="'MODULE0_EXPRESSION_SQ' |translate"></span>
+    <span ng-bind="'MODULE0_EXPRESSION_QB_SQ_{name}'| translate:{name: 'toto'} "></span>
+    <span ng-bind-html="'MODULE0_EXPRESSION_QB_SQ_{}' | translate | format:'toto' | safe} "></span>
 
-<!--
-  TEST CASE: Interpolated directive
-  see http://angular-translate.github.io/docs/#/guide/05_using-translate-directive
--->
-<span translate>
-    MODULE0_DIRECTIVE_INTERPOLATED
-</span>
-<!--
-  TEST CASE: Namespaced Interpolated directive
-  see http://angular-translate.github.io/docs/#/guide/05_using-translate-directive
--->
-<span translate>NAMESPACED.MODULE0_DIRECTIVE_INTERPOLATED</span>
+    <!--
+      TEST CASE: Interpolated directive
+      see http://angular-translate.github.io/docs/#/guide/05_using-translate-directive
+    -->
+    <span translate>
+        MODULE0_DIRECTIVE_INTERPOLATED
+    </span>
+    <!--
+      TEST CASE: Namespaced Interpolated directive
+      see http://angular-translate.github.io/docs/#/guide/05_using-translate-directive
+    -->
+    <span translate>NAMESPACED.MODULE0_DIRECTIVE_INTERPOLATED</span>
 
-<!--
-  TEST CASE: Directive with translation id as attribute value
-  see http://angular-translate.github.io/docs/#/guide/05_using-translate-directive
--->
-<span translate="MODULE0_DIRECTIVE_STANDALONE"></span>
+    <!--
+      TEST CASE: Directive with translation id as attribute value
+      see http://angular-translate.github.io/docs/#/guide/05_using-translate-directive
+    -->
+    <span translate="MODULE0_DIRECTIVE_STANDALONE"></span>
 
-<!--
-  TEST CASE 06: Directive with translation id as attribute value
-  see http://angular-translate.github.io/docs/#/guide/05_using-translate-directive
--->
-<span translate="NAMESPACED.MODULE0_DIRECTIVE_STANDALONE"></span>
+    <!--
+      TEST CASE 06: Directive with translation id as attribute value
+      see http://angular-translate.github.io/docs/#/guide/05_using-translate-directive
+    -->
+    <span translate="NAMESPACED.MODULE0_DIRECTIVE_STANDALONE"></span>
+
+    <div >
+        <div >
+            <div >
+                <div >
+                    <div ng-init="category='something'">
+                        <div class="panel-heading"
+                             translate="NESTED_TEXT{:CATEGORY}"
+                             translate-values="{CATEGORY: category}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

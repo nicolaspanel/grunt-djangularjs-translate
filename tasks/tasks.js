@@ -36,23 +36,19 @@ module.exports = function (grunt) {
                 // create pairs for each language
                 var moduleName = pair[0], foundKeys = pair[1];
 
-                grunt.log.ok('check keys');
                 foundKeys = _.uniq(foundKeys);
 
-                if (options.safe) {
-                    var hidden = _
-                        .filter(foundKeys, function (key, i) {
-                            return _.chain(foundKeys)
-                                .without(key)
-                                .any(function (otherKey) {
-                                    return otherKey.indexOf(key + '.') === 0; // start with
-                                })
-                                .value();
-                        });
-                    if (!_.isEmpty(hidden)) {
-                        grunt.fail.warn('Following keys are hidden by one ore more namespace(s): ' + hidden.join(', '));
-                    }
-                    grunt.log.ok('Keys are ok');
+                var hidden = _
+                    .filter(foundKeys, function (key, i) {
+                        return _.chain(foundKeys)
+                            .without(key)
+                            .any(function (otherKey) {
+                                return otherKey.indexOf(key + '.') === 0; // start with
+                            })
+                            .value();
+                    });
+                if (!_.isEmpty(hidden)) {
+                    grunt.fail.warn('Following keys are hidden by namespace usage' + hidden.join(', '));
                 }
 
                 return memo.concat(_.map(options.lang, function (lang) { return [moduleName, foundKeys, lang];  }));

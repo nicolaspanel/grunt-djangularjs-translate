@@ -15,6 +15,7 @@ describe('translate task', function () {
     beforeEach(function (done) {
         // duplicate public files
         ncp('test/public', 'public', done);
+        this.timeout(1000);
     });
     afterEach(function (done) {
         // delete public files
@@ -58,7 +59,8 @@ describe('translate task', function () {
                 'MODULE0_EXPRESSION_QB_SQ_{name}': '',
                 'MODULE0_EXPRESSION_QB_SQ_{}': '',
                 'MODULE0_DIRECTIVE_INTERPOLATED': '',
-                'MODULE0_DIRECTIVE_STANDALONE': ''
+                'MODULE0_DIRECTIVE_STANDALONE': '',
+                'NESTED_TEXT{:CATEGORY}': ''
             });
         });
 
