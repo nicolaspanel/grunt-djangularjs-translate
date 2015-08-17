@@ -16,19 +16,19 @@ function buildRegExp(str, opt){
     return new RegExp(str, opt || 'gi');
 }
 
-var SPACE_OR_NEW_LINE = '(?:(?:\\s|\\n)*)*'; // [...]
+var SPACE_OR_NEW_LINE = '(?:(?:\\s|\\n)*)*?'; // [...]
 var COMMENT_REG = format('\\/\\*{0}translate{0}\\*\\/', SPACE_OR_NEW_LINE); // /*[...]translate[...]*/
 var SERVICE_REG = '\\$translate(?:\\.instant)?';               // $translate
 var QUOTE_REG = '(?:\\\'|\")';
 var REGEXES = {
-    comment: buildRegExp(format('{0}{1}(\\S+){1}', COMMENT_REG, QUOTE_REG)), // looks for commented translations. Ex: /* translation */'TRANS_ID'
-    serviceSingle: buildRegExp(format('{0}\\(\\s*{1}(\\S+){1}', SERVICE_REG, QUOTE_REG)), // looks for service with single translations. Ex: $translate('TRANS_ID')
-    serviceMultiple: buildRegExp(format('{0}\\({1}(\\[{1}(?:{2}\\S+{2}(?:(?:\\s|\\n|,)*)*)+{1}\\]){1}\\)', SERVICE_REG, SPACE_OR_NEW_LINE, QUOTE_REG)), // looks for service with multiple translations on single line. Ex: $translate(['TRANS_ID_01', 'TRANS_ID_01'])
-    filter: buildRegExp(format('{0}{2}{3}(\\S+){3}{2}\\|{2}translate(:.*?)?{2}(?:{2}\\|{2}\\S+(:.*?)?{2})*{1}', '{{', '}}', SPACE_OR_NEW_LINE, QUOTE_REG)), // looks for filter in curly brackets. Ex: {{ 'TRANS_ID' |translate }}
+    comment: buildRegExp(format('{0}{1}(\\S+?){1}', COMMENT_REG, QUOTE_REG)), // looks for commented translations. Ex: /* translation */'TRANS_ID'
+    serviceSingle: buildRegExp(format('{0}\\(\\s*?{1}(\\S+?){1}', SERVICE_REG, QUOTE_REG)), // looks for service with single translations. Ex: $translate('TRANS_ID')
+    serviceMultiple: buildRegExp(format('{0}\\({1}(\\[{1}(?:{2}\\S+?{2}(?:(?:\\s|\\n|,)*?)*?)+{1}\\]){1}\\)', SERVICE_REG, SPACE_OR_NEW_LINE, QUOTE_REG)), // looks for service with multiple translations on single line. Ex: $translate(['TRANS_ID_01', 'TRANS_ID_01'])
+    filter: buildRegExp(format('{0}{2}{3}(\\S+?){3}{2}\\|{2}translate.*?{1}', '{{', '}}', SPACE_OR_NEW_LINE, QUOTE_REG)), // looks for filter in curly brackets. Ex: {{ 'TRANS_ID' |translate }}
     //expression: buildRegExp(format('<[^>]*={1}{0}{1}(\\S+){1}{0}\\|{0}translate(:.*?)?{0}(?:{0}\\|{0}\\S+(:.*?)?{0})*{1}', SPACE_OR_NEW_LINE, QUOTE_REG)), // looks for filter in curly directive expression. Ex: <i ng-bind="'TRANS_ID' |translate " ></i>
-    expression: buildRegExp(format('<[^>]*bind(?:-html)?={1}{0}{1}(\\S+){1}{0}\\|{0}translate(:.*?)?{0}(?:{0}\\|{0}\\S+(:.*?)?{0})*{1}', SPACE_OR_NEW_LINE, QUOTE_REG)), // looks for filter in curly directive expression. Ex: <i ng-bind="'TRANS_ID' |translate " ></i>
-    directiveInterpolated: buildRegExp('<[^>]*translate[^{>]*>([^<]*)<\/[^>]*>'),
-    directiveStandalone: buildRegExp(format('<[^>]*translate={0}(\\S+){0}', QUOTE_REG))
+    expression: buildRegExp(format('<[^>]*?bind(?:-html)?={1}{0}{1}(\\S+?){1}{0}\\|{0}translate.*?{1}', SPACE_OR_NEW_LINE, QUOTE_REG)), // looks for filter in curly directive expression. Ex: <i ng-bind="'TRANS_ID' |translate " ></i>
+    directiveInterpolated: buildRegExp(format('<[^>]*translate(?!=)[^{>]*>([^<]*)<\/[^>]*>', SPACE_OR_NEW_LINE)),
+    directiveStandalone: buildRegExp(format('<[^>]*?translate={0}(\\S+?){0}', QUOTE_REG))
 };
 var MODULE_REG = buildRegExp('^^public\\/([^\\/]+)\\/.*', 'i');
 
