@@ -44,7 +44,6 @@ module.exports = function(grunt) {
                 src: ['test/**/*.spec.js']
             }
         }
-
     });
 
     grunt.loadTasks('tasks');

@@ -7,6 +7,7 @@ module.exports = function (grunt) {
     var stringify = require('stringify-object');
     var _ = require('lodash');
 
+
     grunt.registerMultiTask('translate', 'Generate translations for djangularjs projects', function () {
 
         var options = _.extend({
@@ -16,7 +17,8 @@ module.exports = function (grunt) {
                 "public/*[!_]*/*[!tests]*/*.html"
             ],
             lang: ['en'],
-            dest: 'i18n'
+            dest: 'i18n',
+            displayStats: true
         }, this.data || {});
 
         var files = grunt.file.expand(options.src);
@@ -25,7 +27,7 @@ module.exports = function (grunt) {
             grunt.fail.fatal('No file found. Make sure `src` option is properly defined.');
         }
 
-        var stats = _.chain(files)
+        var report = _.chain(files)
             .reduce(function (memo, file) {
                 var moduleName = lib.getModuleName(file);
                 memo[moduleName] = (memo[moduleName] || []).concat(lib.findTranslations(grunt.file.read(file)));
@@ -67,7 +69,7 @@ module.exports = function (grunt) {
                 }
 
                 newTranslations = _.merge({}, lib.nestify(foundKeys), jsonTranslations);
-                grunt.log.ok(format('Save translations for module "{}" and language "{}"', moduleName, lang));
+                grunt.log.debug(format('Save translations for module "{}" and language "{}"', moduleName, lang));
                 grunt.file.write(pathToJsonFile, JSON.stringify(newTranslations, null, 4));
                 grunt.file.write(pathToJSFile, lib.renderJS({
                     moduleName: moduleName,
@@ -83,7 +85,27 @@ module.exports = function (grunt) {
                 return memo;
             }, {})
             .value();
-        grunt.log.writeln('Statistics: ' + stringify(stats, {indent: '    '}));
+
+        if (options.displayStats){
+            var Table = require('cli-table');
+            var statsTable = new Table({
+                head: ['Module', 'lang', 'Used', 'New', 'Obsolete', 'Empty'],
+                style: {compact: true}
+            });
+            var modules = _.keys(report);
+            _.forEach(modules, function (module, i) {
+                var languages = report[module];
+                _.forEach(options.lang, function (lang) {
+                    var stat = languages[lang];
+                    statsTable.push([module, lang, stat.used, stat.new, stat.obsolete, stat.empty]);
+                });
+                if (i < modules.length - 1){
+                    statsTable.push([]);
+                }
+            });
+            grunt.log.ok('Statistics');
+            grunt.log.writeln(statsTable.toString());
+        }
 
     });
 };
