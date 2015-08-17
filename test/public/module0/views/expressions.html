@@ -1,0 +1,6 @@
+<section>
+    <span ng-bind="'EXPRESSION_SQ' |translate"></span>
+    <span ng-bind="'EXPRESSION_QB_SQ_{name}'| translate:{name: 'toto'} "></span>
+    <span ng-bind-html="'EXPRESSION_QB_SQ_{}' | translate | format:'toto' | safe} "></span>
+    <span ng-bind="'NAMESPACED.EXPRESSION' |translate"></span>
+</section>

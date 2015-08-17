@@ -12,10 +12,11 @@ describe('translate task', function () {
     var execOptions = {
         cwd: path.join(__dirname, '..')
     };
+    this.timeout(3000);
     beforeEach(function (done) {
         // duplicate public files
+
         ncp('test/public', 'public', done);
-        this.timeout(1000);
     });
     afterEach(function (done) {
         // delete public files
@@ -33,34 +34,70 @@ describe('translate task', function () {
             helpers.assertExists(pathToEN);
             var content  = JSON.parse(helpers.readFile(pathToEN));
             expect(content).to.eql({
-                'MODULE0_COMMENT_SQ': '',
-                'MODULE0_COMMENT_DQ': '',
-                'MODULE0_SERVICE_SQ': '',
-                'MODULE0_SERVICE_DQ': '',
-                'MODULE0_SERVICE_INSTANT_SQ': '',
-                'MODULE0_SERVICE_INSTANT_DQ': '',
-                'NAMESPACED': {
-                    'MODULE0_SERVICE_SQ': '',
-                    'MODULE0_SERVICE_DQ': '',
-                    'MODULE0_DIRECTIVE_INTERPOLATED': '',
-                    'MODULE0_DIRECTIVE_STANDALONE': ''
+                'YES': '',
+                'NO': '',
+                "LOREM_IPSUM": {
+                    "LG": "",
+                    "MD": "",
+                    "SM": ""
                 },
-                'MODULE0_SERVICE_SQ_{name}': '',
-                'MODULE0_SERVICE_DQ_{name}': '',
-                'MODULE0_SERVICE_MULT_SQ_SL': '',
-                'MODULE0_SERVICE_MULT_DQ_SL': '',
-                'MODULE0_SERVICE_MULT_SQ_ML': '',
-                'MODULE0_SERVICE_MULT_DQ_ML': '',
-                'MODULE0_FILTER_QB_DQ': '',
-                'MODULE0_FILTER_QB_SQ': '',
-                'MODULE0_FILTER_QB_SQ_{name}': '',
-                'MODULE0_FILTER_QB_SQ_{}': '',
-                'MODULE0_EXPRESSION_SQ': '',
-                'MODULE0_EXPRESSION_QB_SQ_{name}': '',
-                'MODULE0_EXPRESSION_QB_SQ_{}': '',
-                'MODULE0_DIRECTIVE_INTERPOLATED': '',
-                'MODULE0_DIRECTIVE_STANDALONE': '',
-                'NESTED_TEXT{:CATEGORY}': ''
+                'COMMENT_SQ': '',
+                'COMMENT_DQ': '',
+                'SERVICE_SQ': '',
+                'SERVICE_DQ': '',
+                'SERVICE_INSTANT_SQ': '',
+                'SERVICE_INSTANT_DQ': '',
+                'NAMESPACED': {
+                    'SERVICE_SQ': '',
+                    'SERVICE_DQ': '',
+                    'DIRECTIVE_INTERPOLATED': '',
+                    'DIRECTIVE_STANDALONE': '',
+                    'FILTER': '',
+                    'EXPRESSION': ''
+                },
+                'SERVICE_SQ_{name}': '',
+                'SERVICE_DQ_{name}': '',
+                'SERVICE_MULT_SQ_SL': '',
+                'SERVICE_MULT_DQ_SL': '',
+                'SERVICE_MULT_SQ_ML': '',
+                'SERVICE_MULT_DQ_ML': '',
+                'FILTER_QB_DQ': '',
+                'FILTER_QB_SQ': '',
+                'FILTER_QB_SQ_{name}': '',
+                'FILTER_QB_SQ_{}': '',
+                'EXPRESSION_SQ': '',
+                'EXPRESSION_QB_SQ_{name}': '',
+                'EXPRESSION_QB_SQ_{}': '',
+                'DIRECTIVE_INTERPOLATED': '',
+                'DIRECTIVE_STANDALONE': '',
+                'NESTED_TEXT{:CATEGORY}': '',
+                'MY_FORM': {
+                    'AVATAR': {
+                        'CHANGE_ME': '',
+                        'LABEL': ''
+                    },
+                    'EMAIL': {
+                        'LABEL': '',
+                        'VISIBLE_LABEL': ''
+                    },
+                    'PRIVATE_EMAIL{email}': '',
+                    'PUBLIC_EMAIL{email}': '',
+                    'SAVE_CHANGES': '',
+                    'USERNAME': {
+                        'LABEL': '',
+                        'PLACEHOLDER': '',
+                        'REQUIRED': ''
+                    },
+                    'USER_BLOG': {
+                        'BAD_URL_ERROR': '',
+                        'LABEL': ''
+                    },
+                    'USER_DESCRIPTION': {
+                        'LABEL': '',
+                        'PLACEHOLDER': '',
+                        'TOO_LONG_ERROR': ''
+                    }
+                }
             });
         });
 

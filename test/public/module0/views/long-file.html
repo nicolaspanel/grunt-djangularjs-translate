@@ -1,0 +1,130 @@
+<section  >
+    <div class="panel panel-default">
+        <div class="panel-heading" translate="LOREM_IPSUM.SM"></div>
+        <div class="panel-body">
+            <p translate="LOREM_IPSUM.LG"></p>
+        </div>
+        <hr/>
+        <div class="panel-body">
+            <form name="myForm"
+                  ng-submit="myForm.$dirty && ctrl.updateProfile(myForm)"
+                  class="form-horizontal" novalidate autocomplete="off">
+                <div class="form-group" >
+                    <dl class="dl-horizontal">
+                        <dt><label class="control-label" translate="MY_FORM.AVATAR.LABEL"></label></dt>
+                        <dd>
+                            <img name="avatar" ng-src="{{ avatarUrl }}"
+                                 class="img-thumbnail img-rounded"
+                                 ng-class="{'img-thumbnail-success': avatarFile}"
+                                 alt="Responsive image" height="100" width="100" >
+                            <div style="margin-top: 5px;">
+                                <div class="btn btn-default"
+                                     ngf-select ngf-change="ctrl.uploadAvatar($files)"
+                                     allow-dir="false"
+                                     ng-accept="'image/*'"
+                                     ng-multiple="false"
+                                     translate="MY_FORM.AVATAR.CHANGE_ME"></div>
+                                <p class="note" translate="LOREM_IPSUM.MD"></p>
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="form-group" >
+                    <dl class="dl-horizontal">
+                        <dt><label for="name" class="control-label" translate="MY_FORM.USERNAME.LABEL"></label></dt>
+                        <dd>
+                            <input type="text"
+                                   id="name"
+                                   name="name"
+                                   required
+                                   ng-minlength="2"
+                                   ng-maxlength="30"
+                                   class="form-control"
+                                   ng-model="user.name"
+                                   placeholder="{{ 'MY_FORM.USERNAME.PLACEHOLDER' | translate}}" />
+                        </dd>
+                        <dd ng-if="myForm.name.$dirty && myForm.name.$invalid"
+                            ng-messages="myForm.name.$error" class="error">
+                            <p ng-message="required" translate>MY_FORM.USERNAME.REQUIRED</p>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="form-group">
+                    <dl class="dl-horizontal">
+                        <dt><label for="email" class="control-label" translate="MY_FORM.EMAIL.LABEL"></label></dt>
+                        <dd>
+                            <input type="email"
+                                   id="email"
+                                   name="email"
+                                   class="form-control"
+                                   ng-model="user.email"
+                                   disabled />
+                        </dd>
+                    </dl>
+                </div>
+                <div class="form-group" >
+                    <dl class="dl-horizontal">
+                        <dt><label for="publicEmail" class="control-label" translate="MY_FORM.EMAIL.VISIBLE_LABEL"></label></dt>
+                        <dd>
+                            <div class="checkbox">
+                                <label ng-switch="!!user.isEmailPublic" >
+                                    <input type="checkbox"
+                                           id="publicEmail"
+                                           name="publicEmail"
+                                           ng-model="user.isEmailPublic" />
+                                    <span ng-switch-when="true" translate>YES</span>
+                                    <span ng-switch-when="false" translate>NO</span>
+                                </label>
+                                <p class="note" >
+                                    <span ng-switch-when="true"
+                                          ng-bind-html="'MY_FORM.PUBLIC_EMAIL{email}' |translate |format:user |safe" ></span>
+                                    <span ng-switch-when="false"
+                                          ng-bind-html="'MY_FORM.PRIVATE_EMAIL{email}' |translate |format:user | safe" ></span>
+                                </p>
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="form-group" >
+                    <dl class="dl-horizontal">
+                        <dt><label for="blog" class="control-label" translate>MY_FORM.USER_DESCRIPTION.LABEL</label></dt>
+                        <dd>
+                            <textarea id="description"
+                                      name="description"
+                                      class="form-control"
+                                      ng-maxlength="160"
+                                      ng-model="user.description"
+                                      placeholder="{{ 'MY_FORM.USER_DESCRIPTION.PLACEHOLDER' | translate }}"></textarea>
+                        </dd>
+                        <dd ng-if="myForm.description.$dirty && myForm.description.$invalid"
+                            ng-messages="myForm.description.$error" class="error">
+                            <p ng-message="maxlength" translate="MY_FORM.USER_DESCRIPTION.TOO_LONG_ERROR"></p>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="form-group" >
+                    <dl class="dl-horizontal">
+                        <dt><label for="blog" class="control-label" translate="MY_FORM.USER_BLOG.LABEL"></label></dt>
+                        <dd>
+                            <input type="url"
+                                   id="blog"
+                                   name="blog"
+                                   class="form-control"
+                                   ng-model="user.blog" />
+                        </dd>
+                        <dd ng-if="myForm.blog.$dirty && myForm.blog.$invalid"
+                            ng-messages="myForm.blog.$error" class="error">
+                            <p ng-message="url" translate="MY_FORM.USER_BLOG.BAD_URL_ERROR"></p>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="form-group">
+                    <dl class="dl-horizontal">
+                        <dd><button type="submit" class="btn btn-success" translate="MY_FORM.SAVE_CHANGES"></button></dd>
+                    </dl>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</section>
