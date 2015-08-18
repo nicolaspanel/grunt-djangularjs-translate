@@ -4,4 +4,14 @@
     <span >{{'FILTER_QB_SQ_{name}' | translate:{name: 'toto'} }}</span>
     <span >{{'FILTER_QB_SQ_{}' | translate | format:'toto'} }}</span>
     <span >{{'NAMESPACED.FILTER'|translate }}</span>
+
+    <ui-select ng-model="some.stuff"
+               required>
+        <ui-select-match placeholder="{{'NAMESPACED.PLACEHOLDER'|translate}}">
+            {{ $select.selected }}
+        </ui-select-match>
+        <ui-select-choices repeat="item in items">
+            {{ item }}
+        </ui-select-choices>
+    </ui-select>
 </section>

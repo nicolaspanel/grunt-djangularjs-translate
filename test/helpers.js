@@ -5,7 +5,10 @@ var assert = require('assert');
 
 function readFile(pathToFile) {
     var absPath = path.join(__dirname, '..', pathToFile);
-    return fs.readFileSync(absPath, 'utf8');
+    return {
+        content: fs.readFileSync(absPath, 'utf8'),
+        path: absPath
+    };
 }
 
 function assertExists(pathToFile) {

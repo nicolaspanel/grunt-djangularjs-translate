@@ -52,7 +52,8 @@ describe('lib', function () {
                                                          'FILTER_QB_SQ',
                                                          'FILTER_QB_SQ_{name}',
                                                          'FILTER_QB_SQ_{}',
-                                                         'NAMESPACED.FILTER']);
+                                                         'NAMESPACED.FILTER',
+                                                         'NAMESPACED.PLACEHOLDER']);
        });
 
        it('can find filter inside an expression', function () {

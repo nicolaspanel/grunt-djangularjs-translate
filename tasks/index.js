@@ -30,7 +30,7 @@ module.exports = function (grunt) {
         var report = _.chain(files)
             .reduce(function (memo, file) {
                 var moduleName = lib.getModuleName(file);
-                memo[moduleName] = (memo[moduleName] || []).concat(lib.findTranslations(grunt.file.read(file)));
+                memo[moduleName] = (memo[moduleName] || []).concat(lib.findTranslations({content: grunt.file.read(file), path: file}));
                 return memo;
             }, {})
             .pairs()

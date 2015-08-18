@@ -32,7 +32,7 @@ describe('translate task', function () {
         it('should have generated a json file for module0', function () {
             var pathToEN = 'public/module0/i18n/en.json';
             helpers.assertExists(pathToEN);
-            var content  = JSON.parse(helpers.readFile(pathToEN));
+            var content  = JSON.parse(helpers.readFile(pathToEN).content);
             expect(content).to.eql({
                 'YES': '',
                 'NO': '',
@@ -53,7 +53,8 @@ describe('translate task', function () {
                     'DIRECTIVE_INTERPOLATED': '',
                     'DIRECTIVE_STANDALONE': '',
                     'FILTER': '',
-                    'EXPRESSION': ''
+                    'EXPRESSION': '',
+                    'PLACEHOLDER': ''
                 },
                 'SERVICE_SQ_{name}': '',
                 'SERVICE_DQ_{name}': '',
@@ -104,7 +105,7 @@ describe('translate task', function () {
         it('should have updated json file for module1 and leaved previously declared keys', function () {
             var pathToEN = 'public/module1/i18n/en.json';
             helpers.assertExists(pathToEN);
-            var content  = JSON.parse(helpers.readFile(pathToEN));
+            var content  = JSON.parse(helpers.readFile(pathToEN).content);
             expect(content).to.eql({
                 'MODULE1': {
                     'DESCRIPTION': '',

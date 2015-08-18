@@ -36,22 +36,27 @@ var REGEXES = {
 
 var MODULE_REG = buildRegExp('^^public\\/([^\\/]+)\\/.*', 'i');
 
-function _findSingles(reg, content){
-    var found = [];
-    var match = reg.exec(content);
+function _findSingles(reg, file){
+    var found = [], toBeRemoved = [];
+    var match = reg.exec(file.content);
     while (match) {
         var trimmed = match[1].trim();
         if (trimmed) {
             found.push(trimmed);
         }
-        match = reg.exec(content);
+        toBeRemoved.push(match[0]);
+        match = reg.exec(file.content);
     }
+    toBeRemoved.forEach(function (str) {
+        file.content = file.content.replace(str, '');
+    });
     return found;
 }
 
-function _findMultiples(reg, content) {
-    var found = [];
-    var match = reg.exec(content);
+function _findMultiples(reg, file) {
+    var found = [],
+        toBeRemoved = [],
+        match = reg.exec(file.content);
     while (match) {
         var reg2 = buildRegExp('(?:\\\'|\\\")(\\S+)(?:\\\'|\\\")');
         var match2 = reg2.exec(match[1]);
@@ -62,12 +67,16 @@ function _findMultiples(reg, content) {
             }
             match2 = reg2.exec(match[1]);
         }
-        match = reg.exec(content);
+        toBeRemoved.push(match[0]);
+        match = reg.exec(file.content);
     }
+    toBeRemoved.forEach(function (str) {
+        file.content = file.content.replace(str, '');
+    });
     return found;
 }
 
-function findTranslations(content){
+function findTranslations(file){
     return _.chain(REGEXES)
         .pairs()
         .reduce(function(matches, pair){
@@ -75,9 +84,9 @@ function findTranslations(content){
 
             switch (regName) {
                 case 'serviceMultiple':
-                    return matches.concat(_findMultiples(reg, content));
+                    return matches.concat(_findMultiples(reg, file));
                 default :
-                    return matches.concat(_findSingles(reg, content));
+                    return matches.concat(_findSingles(reg, file));
             }
         }, [])
         .value();
