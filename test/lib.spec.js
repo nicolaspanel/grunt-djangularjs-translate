@@ -48,21 +48,26 @@ describe('lib', function () {
        it('can find filter inside curly-brackets', function () {
            var content = helpers.readFile('test/public/module0/views/filters.html');
 
-           expect(lib.findTranslations(content)).to.eql(['FILTER_QB_DQ',
-                                                         'FILTER_QB_SQ',
-                                                         'FILTER_QB_SQ_{name}',
-                                                         'FILTER_QB_SQ_{}',
-                                                         'NAMESPACED.FILTER',
-                                                         'NAMESPACED.PLACEHOLDER']);
+           expect(lib.findTranslations(content)).to.eql([
+               'FILTER_QB_DQ',
+               'FILTER_QB_SQ',
+               'FILTER_QB_SQ_{name}',
+               'FILTER_QB_SQ_{}',
+               'NAMESPACED.FILTER',
+               'ONE_TIME_FILTER',
+               'NAMESPACED.PLACEHOLDER'
+           ]);
        });
 
        it('can find filter inside an expression', function () {
            var content = helpers.readFile('test/public/module0/views/expressions.html');
-
-           var translations = lib.findTranslations(content);
-           expect(translations).to.contain('EXPRESSION_SQ');
-           expect(translations).to.contain('EXPRESSION_QB_SQ_{name}');
-           expect(translations).to.contain('EXPRESSION_QB_SQ_{}');
+           expect(lib.findTranslations(content)).to.eql([
+               'EXPRESSION_SQ',
+               'EXPRESSION_QB_SQ_{name}',
+               'EXPRESSION_QB_SQ_{}',
+               'NAMESPACED.EXPRESSION',
+               'ONE_TIME_EXPRESSION'
+           ]);
        });
 
        it('can find from interpolated directive', function () {

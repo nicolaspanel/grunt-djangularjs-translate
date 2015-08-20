@@ -36,6 +36,7 @@ describe('translate task', function () {
             expect(content).to.eql({
                 'YES': '',
                 'NO': '',
+                'ONE_TIME_EXPRESSION':'',
                 "LOREM_IPSUM": {
                     "LG": "",
                     "MD": "",
@@ -66,6 +67,7 @@ describe('translate task', function () {
                 'FILTER_QB_SQ': '',
                 'FILTER_QB_SQ_{name}': '',
                 'FILTER_QB_SQ_{}': '',
+                'ONE_TIME_FILTER': '',
                 'EXPRESSION_SQ': '',
                 'EXPRESSION_QB_SQ_{name}': '',
                 'EXPRESSION_QB_SQ_{}': '',
