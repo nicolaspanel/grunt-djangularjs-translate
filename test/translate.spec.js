@@ -12,7 +12,7 @@ describe('translate task', function () {
     var execOptions = {
         cwd: path.join(__dirname, '..')
     };
-    this.timeout(3000);
+    this.timeout(5000);
     beforeEach(function (done) {
         // duplicate public files
 
