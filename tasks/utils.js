@@ -5,7 +5,7 @@ var _ = require('lodash');
 var Handlebars = require('handlebars');
 var fs = require('fs');
 var path =  require('path');
-var templateHelpers = require('../templates/helpers');
+var templateHelpers = require('../templates/helpers/index');
 
 _.forEach(templateHelpers, function (register) { register(Handlebars); });
 
@@ -77,7 +77,7 @@ function _findMultiples(reg, file) {
     return found;
 }
 
-function findTranslations(file){
+function findKeys(file){
     return _.chain(REGEXES)
         .pairs()
         .reduce(function(matches, pair){
@@ -102,6 +102,20 @@ function assignProperty(obj, path, value) {
     }
 
     obj[props[i]] = value;
+}
+
+
+function deleteProperty(obj, path) {
+    var props = path.split(".") , i = 0, prop;
+
+    for(; i < props.length - 1; i++) {
+        obj[props[i]] = obj[props[i]] || {};
+        obj = obj[props[i]];
+    }
+
+    if (obj[props[i]]){
+        delete obj[props[i]];
+    }
 }
 
 function nestify(translations, defaultValue) {
@@ -172,10 +186,13 @@ function renderJS(data){
 }
 
 module.exports = {
-    findTranslations: findTranslations,
+    findKeys: findKeys,
     buildRegExp: buildRegExp,
     nestify: nestify,
     getModuleName: getModuleName,
     getStats: getStats,
-    renderJS: renderJS
+    renderJS: renderJS,
+    flattenObject: flattenObject,
+    deleteProperty: deleteProperty,
+    assignProperty: assignProperty
 };

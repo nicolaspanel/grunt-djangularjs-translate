@@ -26,8 +26,13 @@ module.exports = function(grunt) {
         },
 
         translate: {
+            options: {
+                mainModule: 'module0'
+            },
             // Provide fr_FR language
-            default_options: {},
+            default_options: {
+
+            },
             en_fr_unsafe: {
                 lang: ['en', 'fr']
             },

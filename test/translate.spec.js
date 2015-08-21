@@ -34,8 +34,8 @@ describe('translate task', function () {
             helpers.assertExists(pathToEN);
             var content  = JSON.parse(helpers.readFile(pathToEN).content);
             expect(content).to.eql({
-                'YES': '',
-                'NO': '',
+                'YES': 'Yes', // existing definition found on module1
+                'NO': 'No',   // existing definition found on module1
                 'ONE_TIME_EXPRESSION':'',
                 "LOREM_IPSUM": {
                     "LG": "",
@@ -112,8 +112,9 @@ describe('translate task', function () {
                 'MODULE1': {
                     'DESCRIPTION': '',
                     'TITLE': ''
-                },
-                'MODULE1_TITLE': 'Some Title'
+                }
+                // note: "YES" and "NO" keys moved to main modules (module0)
+                //       because they are used in both modules
             });
         });
 
