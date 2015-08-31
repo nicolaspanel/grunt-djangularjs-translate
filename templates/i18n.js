@@ -8,9 +8,9 @@
 
 var translations = {{{json translations}}};
 
-angular.module('{{moduleName}}')
+angular.module('{{moduleNamePrefix}}{{moduleName}}')
     .config(['$translateProvider', function($translateProvider) {
         $translateProvider.translations('{{lang}}', translations);
-}]);
+    }]);
 })();
 

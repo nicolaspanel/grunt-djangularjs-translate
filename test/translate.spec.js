@@ -117,6 +117,16 @@ describe('translate task', function () {
             });
         });
 
+        it('should have generated a js file in new path', function () {
+            var jsFile = 'public/module0/i18n/en.js';
+            helpers.assertExists(jsFile);
+            var expectedContent = '' +
+                'angular.module(\'module0\')\n' +
+                '    .config([\'$translateProvider\', function($translateProvider) {\n' +
+                '        $translateProvider.translations(\'en\', translations);\n' +
+                '    }]);';
+            expect(helpers.readFile(jsFile).content).to.contain(expectedContent);
+        });
     });
 
     describe('with additional FR language options and unsafe mode', function () {
@@ -138,6 +148,25 @@ describe('translate task', function () {
         });
         it('should have generated a json file in new path', function () {
             helpers.assertExists('public/module0/locales/en.json');
+        });
+    });
+
+    describe('with module prefix option', function () {
+        beforeEach(function (done) {
+            exec('grunt translate:prefixed_module_name', execOptions, done);
+        });
+        it('should have generated a json file in new path', function () {
+            helpers.assertExists('public/module0/i18n/en.json');
+        });
+        it('should have generated a js file in new path', function () {
+            var jsFile = 'public/module0/i18n/en.js';
+            helpers.assertExists(jsFile);
+            var expectedContent = '' +
+                'angular.module(\'my-app.module0\')\n' +
+                '    .config([\'$translateProvider\', function($translateProvider) {\n' +
+                '        $translateProvider.translations(\'en\', translations);\n' +
+                '    }]);';
+            expect(helpers.readFile(jsFile).content).to.contain(expectedContent);
         });
     });
 

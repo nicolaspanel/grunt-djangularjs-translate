@@ -246,7 +246,8 @@ module.exports = function (grunt) {
                         grunt.file.write(pathToJSFile, utils.renderJS({
                             moduleName: moduleName,
                             lang: lang,
-                            translations: newTranslations
+                            translations: newTranslations,
+                            moduleNamePrefix: options.moduleNamePrefix || ''
                         }));
                         return [moduleName, utils.getStats(existingTranslations[moduleName][lang], foundKeys), lang];
                     })
@@ -292,7 +293,8 @@ module.exports = function (grunt) {
             lang: ['en'],
             dest: 'i18n',
             displayStats: true,
-            mainModule: 'core'
+            mainModule: 'core',
+            moduleNamePrefix: ''
         }, this.options() || {}, this.data || {});
         return new Q(processTranslations(options)).done(this.async());
     });

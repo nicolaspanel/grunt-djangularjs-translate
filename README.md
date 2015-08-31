@@ -4,7 +4,6 @@ Grunt tasks to automatically extract translations from your [djangularjs](https:
 
 Under active development
 
-[![NPM](https://nodei.co/npm/grunt-djangularjs-translate.png)](https://nodei.co/npm/grunt-djangularjs-translate/)
 [![Build Status](https://travis-ci.org/nicolaspanel/grunt-djangularjs-translate.png)](https://travis-ci.org/nicolaspanel/grunt-djangularjs-translate)
 
 
@@ -17,7 +16,7 @@ __NOTE__: This extraction tool is made to work with the [djangularjs][https://gi
 ## Default configuration
 
 ```js
-// gruntfile.js example
+// gruntfile.js 
 module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);
     grunt.initConfig({
@@ -30,7 +29,9 @@ module.exports = function(grunt) {
                     "public/*[!_]*/*[!tests]*/*.html"
                 ],
                 lang: ['en'],
-                dest: 'i18n'
+                dest: 'i18n',
+                mainModule: 'core',
+                moduleNamePrefix: ''
             }
         },
         // ...
@@ -43,8 +44,12 @@ module.exports = function(grunt) {
 - [src](#src)
 - [lang](#lang)
 - [dest](#dest)
+- [mainModule](#mainModule)
+- [moduleNamePrefix](#moduleNamePrefix)
 
 #### src
+
+List files containing the translations.
 
 Type: `Array`
 
@@ -58,25 +63,68 @@ Default:
 ```
 
 
-List files containing the translations.
-
-
 #### lang
+
+Define used languages.
 
 Type: `Array`
 
 Default: `['en']`
 
 
-Define used languages.
-
 #### dest
+
+Name of the output folder.
 
 Type: `String`
 
 Default:  `i18n`
 
-Name of the output folder.
+
+#### mainModule
+
+Translations found in multiple modules will be moved into `mainModule`.
+
+Type: `String`
+
+Default:  `core`
+
+#### moduleNamePrefix
+
+Prepend module name with given prefix
+
+Type: `String`
+
+Default:  `''` (no prefix)
+
+__Example__:
+Configuration below
+```js
+// gruntfile.js example
+module.exports = function(grunt) {
+    require('load-grunt-tasks')(grunt);
+    grunt.initConfig({
+        // ...
+        translate: {
+            all: {
+                moduleNamePrefix: 'my-app.'
+            }
+        },
+        // ...
+    });
+}
+```
+
+will generate following translation files:
+```js
+// public/<module-name>/i18n/<lang>.js
+...
+angular.module('my-app.<module-name>')
+    .config(['$translateProvider', function($translateProvider) {
+        $translateProvider.translations('<lang>', translations);
+    }]);
+...
+```
 
 
 ## Test

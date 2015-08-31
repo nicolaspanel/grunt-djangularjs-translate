@@ -38,6 +38,9 @@ module.exports = function(grunt) {
             },
             dest_locales: {
                 dest: 'locales'
+            },
+            prefixed_module_name: {
+                moduleNamePrefix: 'my-app.'
             }
         },
         simplemocha: {
