@@ -15,7 +15,6 @@ describe('translate task', function () {
     this.timeout(5000);
     beforeEach(function (done) {
         // duplicate public files
-
         ncp('test/public', 'public', done);
     });
     afterEach(function (done) {
