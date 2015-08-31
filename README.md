@@ -11,7 +11,7 @@ Under active development
 
 `npm install grunt-djangularjs-translate`
 
-__NOTE__: This extraction tool is made to work with the [djangularjs][https://github.com/nicolaspanel/djangularjs] framework
+__NOTE__: This extraction tool is made to work with the [djangularjs](https://github.com/nicolaspanel/djangularjs) framework
 
 ## Default configuration
 
@@ -44,8 +44,8 @@ module.exports = function(grunt) {
 - [src](#src)
 - [lang](#lang)
 - [dest](#dest)
-- [mainModule](#mainModule)
-- [moduleNamePrefix](#moduleNamePrefix)
+- [mainModule](#mainmodule)
+- [moduleNamePrefix](#modulenameprefix)
 
 #### src
 
@@ -78,7 +78,7 @@ Name of the output folder.
 
 Type: `String`
 
-Default:  `i18n`
+Default:  `'i18n'`
 
 
 #### mainModule
@@ -87,7 +87,7 @@ Translations found in multiple modules will be moved into `mainModule`.
 
 Type: `String`
 
-Default:  `core`
+Default:  `'core'`
 
 #### moduleNamePrefix
 
@@ -98,6 +98,7 @@ Type: `String`
 Default:  `''` (no prefix)
 
 __Example__:
+
 Configuration below
 ```js
 // gruntfile.js example
