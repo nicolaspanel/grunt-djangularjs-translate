@@ -22,7 +22,8 @@
     "mocha": "^2.2.5",
     "ncp": "^2.0.0",
     "rimraf": "^2.4.2",
-    "v8-profiler": "^5.2.9"
+    "v8-profiler": "^5.2.9",
+    "grunt-cli": "~0.1.13"
   },
   "repository": {
     "type": "git",

@@ -131,7 +131,7 @@ module.exports = function (grunt) {
                                 statsTable.push([]);
                             }
                         });
-                    
+
                     grunt.log.ok('Statistics');
                     grunt.log.writeln(statsTable.toString());
                 }
