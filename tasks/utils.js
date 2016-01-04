@@ -113,7 +113,7 @@ function deleteProperty(obj, path) {
         obj = obj[props[i]];
     }
 
-    if (obj[props[i]]){
+    if (_.has(obj,props[i])){
         delete obj[props[i]];
     }
 }

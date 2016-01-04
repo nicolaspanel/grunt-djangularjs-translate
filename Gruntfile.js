@@ -18,7 +18,7 @@ module.exports = function(grunt) {
                 'Gruntfile.js',
                 'tasks/**/*.js',
                 'src/**/*.js',
-                'test/*[!public]*/*.js',
+                'test/*[!public]*/*.js'
             ],
             options: {
                 jshintrc: '.jshintrc'
@@ -26,21 +26,13 @@ module.exports = function(grunt) {
         },
 
         translate: {
-            options: {
-                mainModule: 'module0'
-            },
             // Provide fr_FR language
-            default_options: {
-
-            },
+            default_options: {},
             en_fr_unsafe: {
                 lang: ['en', 'fr']
             },
             dest_locales: {
                 dest: 'locales'
-            },
-            prefixed_module_name: {
-                moduleNamePrefix: 'my-app.'
             }
         },
         simplemocha: {

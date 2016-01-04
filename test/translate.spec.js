@@ -28,13 +28,13 @@ describe('translate task', function () {
             exec('grunt translate:default_options', execOptions, done);
         });
 
-        it('should have generated a json file for module0', function () {
-            var pathToEN = 'public/module0/i18n/en.json';
+        it('should have generated a json file with EN translations', function () {
+            var pathToEN = 'public/i18n/en.json';
             helpers.assertExists(pathToEN);
             var content  = JSON.parse(helpers.readFile(pathToEN).content);
             expect(content).to.eql({
-                'YES': 'Yes', // existing definition found on module1
-                'NO': 'No',   // existing definition found on module1
+                'YES': 'Yes', // existing in i18n/en.json
+                'NO': 'No',   // existing in i18n/en.json
                 'ONE_TIME_EXPRESSION':'',
                 "LOREM_IPSUM": {
                     "LG": "",
@@ -99,29 +99,20 @@ describe('translate task', function () {
                         'PLACEHOLDER': '',
                         'TOO_LONG_ERROR': ''
                     }
-                }
-            });
-        });
-
-        it('should have updated json file for module1 and leaved previously declared keys', function () {
-            var pathToEN = 'public/module1/i18n/en.json';
-            helpers.assertExists(pathToEN);
-            var content  = JSON.parse(helpers.readFile(pathToEN).content);
-            expect(content).to.eql({
+                },
                 'MODULE1': {
                     'DESCRIPTION': '',
                     'TITLE': ''
                 }
-                // note: "YES" and "NO" keys moved to main modules (module0)
-                //       because they are used in both modules
+
             });
         });
 
         it('should have generated a js file in new path', function () {
-            var jsFile = 'public/module0/i18n/en.js';
+            var jsFile = 'public/i18n/en.js';
             helpers.assertExists(jsFile);
             var expectedContent = '' +
-                'angular.module(\'module0\')\n' +
+                'angular.module(\'core\')\n' +
                 '    .config([\'$translateProvider\', function($translateProvider) {\n' +
                 '        $translateProvider.translations(\'en\', translations);\n' +
                 '    }]);';
@@ -134,11 +125,89 @@ describe('translate task', function () {
             exec('grunt translate:en_fr_unsafe', execOptions, done);
         });
 
-        it('should have generated a json file for each module | language', function () {
-            helpers.assertExists('public/module0/i18n/en.json');
-            helpers.assertExists('public/module0/i18n/fr.json');
-            helpers.assertExists('public/module1/i18n/en.json');
-            helpers.assertExists('public/module1/i18n/fr.json');
+        it('should have generated a json file for each language', function () {
+            helpers.assertExists('public/i18n/en.json');
+            helpers.assertExists('public/i18n/fr.json');
+        });
+
+        it('should have generated a json file with EN translations', function () {
+            var pathToFR = 'public/i18n/fr.json';
+            helpers.assertExists(pathToFR);
+            var content  = JSON.parse(helpers.readFile(pathToFR).content);
+            expect(content).to.eql({
+                'YES': '',
+                'NO': '',
+                'ONE_TIME_EXPRESSION':'',
+                "LOREM_IPSUM": {
+                    "LG": "",
+                    "MD": "",
+                    "SM": ""
+                },
+                'COMMENT_SQ': '',
+                'COMMENT_DQ': '',
+                'SERVICE_SQ': '',
+                'SERVICE_DQ': '',
+                'SERVICE_INSTANT_SQ': '',
+                'SERVICE_INSTANT_DQ': '',
+                'NAMESPACED': {
+                    'SERVICE_SQ': '',
+                    'SERVICE_DQ': '',
+                    'DIRECTIVE_INTERPOLATED': '',
+                    'DIRECTIVE_STANDALONE': '',
+                    'FILTER': '',
+                    'EXPRESSION': '',
+                    'PLACEHOLDER': ''
+                },
+                'SERVICE_SQ_{name}': '',
+                'SERVICE_DQ_{name}': '',
+                'SERVICE_MULT_SQ_SL': '',
+                'SERVICE_MULT_DQ_SL': '',
+                'SERVICE_MULT_SQ_ML': '',
+                'SERVICE_MULT_DQ_ML': '',
+                'FILTER_QB_DQ': '',
+                'FILTER_QB_SQ': '',
+                'FILTER_QB_SQ_{name}': '',
+                'FILTER_QB_SQ_{}': '',
+                'ONE_TIME_FILTER': '',
+                'EXPRESSION_SQ': '',
+                'EXPRESSION_QB_SQ_{name}': '',
+                'EXPRESSION_QB_SQ_{}': '',
+                'DIRECTIVE_INTERPOLATED': '',
+                'DIRECTIVE_STANDALONE': '',
+                'NESTED_TEXT{:CATEGORY}': '',
+                'MY_FORM': {
+                    'AVATAR': {
+                        'CHANGE_ME': '',
+                        'LABEL': ''
+                    },
+                    'EMAIL': {
+                        'LABEL': '',
+                        'VISIBLE_LABEL': ''
+                    },
+                    'PRIVATE_EMAIL{email}': '',
+                    'PUBLIC_EMAIL{email}': '',
+                    'SAVE_CHANGES': '',
+                    'USERNAME': {
+                        'LABEL': '',
+                        'PLACEHOLDER': '',
+                        'REQUIRED': ''
+                    },
+                    'USER_BLOG': {
+                        'BAD_URL_ERROR': '',
+                        'LABEL': ''
+                    },
+                    'USER_DESCRIPTION': {
+                        'LABEL': '',
+                        'PLACEHOLDER': '',
+                        'TOO_LONG_ERROR': ''
+                    }
+                },
+                'MODULE1': {
+                    'DESCRIPTION': '',
+                    'TITLE': ''
+                }
+
+            });
         });
     });
 
@@ -147,26 +216,8 @@ describe('translate task', function () {
             exec('grunt translate:dest_locales', execOptions, done);
         });
         it('should have generated a json file in new path', function () {
-            helpers.assertExists('public/module0/locales/en.json');
-        });
-    });
-
-    describe('with module prefix option', function () {
-        beforeEach(function (done) {
-            exec('grunt translate:prefixed_module_name', execOptions, done);
-        });
-        it('should have generated a json file in new path', function () {
-            helpers.assertExists('public/module0/i18n/en.json');
-        });
-        it('should have generated a js file in new path', function () {
-            var jsFile = 'public/module0/i18n/en.js';
-            helpers.assertExists(jsFile);
-            var expectedContent = '' +
-                'angular.module(\'my-app.module0\')\n' +
-                '    .config([\'$translateProvider\', function($translateProvider) {\n' +
-                '        $translateProvider.translations(\'en\', translations);\n' +
-                '    }]);';
-            expect(helpers.readFile(jsFile).content).to.contain(expectedContent);
+            helpers.assertExists('public/locales/en.json');
+            helpers.assertExists('public/locales/en.js');
         });
     });
 

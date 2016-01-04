@@ -1,6 +1,6 @@
 {
   "name": "grunt-djangularjs-translate",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "Grunt tasks to automatically extract translations from your djangularjs project",
   "main": "tasks.tasks.js",
   "scripts": {
@@ -14,7 +14,6 @@
     "expect.js": "^0.3.1",
     "grunt": "~0.4.0",
     "grunt-bump": "0.0.13",
-    "grunt-cli": "^0.1.13",
     "grunt-contrib-clean": "^0.5.0",
     "grunt-contrib-copy": "^0.5.0",
     "grunt-contrib-jshint": "^0.10.0",

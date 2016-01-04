@@ -9,21 +9,6 @@ module.exports = function (grunt) {
     var Q = require('q');
     var inquirer = require('inquirer');
 
-    function askUserWhichTranslationToUse(key, choices, lang) {
-        var deferred = Q.defer();
-        inquirer.prompt([{
-            name: 'duplicatedKey',
-            message: format('Multiple definitions found for key "{}" and language "{}". Select the one you want to keep', key, lang),
-            default: choices[0],
-            type: 'list',
-            choices: choices
-        }], function (answers) {
-            deferred.resolve(answers.duplicatedKey);
-        });
-
-        return deferred.promise;
-    }
-
     function askUserWhichKeysToDiscard(choices) {
         var deferred = Q.defer();
         inquirer.prompt([{
@@ -40,72 +25,40 @@ module.exports = function (grunt) {
     }
 
     function processTranslations(options) {
+
         var files = grunt.file.expand(options.src);
 
         if (_.isEmpty(files)){
             grunt.fail.fatal('No file found. Make sure `src` option is properly defined.');
         }
 
-        var allModules = _
-            .chain(files)
-            .map(utils.getModuleName)
-            .uniq()
-            .value();
+        else if (_.isEmpty(options.lang)){
+            grunt.fail.fatal('Require at least 1 language. Make sure `lang` option is properly defined.');
+        }
 
         var existingTranslations = _
-            .chain(allModules)
-            .reduce(function (memo, moduleName) {
-                // create pairs for each language
-                return memo.concat(_.map(options.lang, function (lang) { return [moduleName, lang];  }));
-            }, [])
-            .reduce(function (memo, pair) {
-                var moduleName = pair[0], lang = pair[1];
-
-                memo[moduleName] = memo[moduleName] || {};
-                memo[moduleName][lang] =  {};
-
-                var pathToJsonFile = format('public/{}/{}/{}.json', moduleName, options.dest, lang);
+            .reduce(options.lang, function (memo, lang) {
+                var pathToJsonFile = format('public/{}/{}.json', options.dest, lang);
                 if (grunt.file.exists(pathToJsonFile)){
-                    memo[moduleName][lang] = grunt.file.readJSON(pathToJsonFile);
+                    memo[lang] = grunt.file.readJSON(pathToJsonFile);
                 }
-                return memo;
-            }, {})
-            .value();
-
-
-        var perModuleFoundKeys =  _
-            .reduce(files, function (memo, file) {
-                var moduleName = utils.getModuleName(file);
-                memo[moduleName] = _.union(memo[moduleName] || [], utils.findKeys({content: grunt.file.read(file), path: file}));
-                return memo;
-            }, {});
-
-        var perModuleAllKeys = _
-            .reduce(allModules, function (memo, moduleName) {
-                memo[moduleName] =  _
-                    .reduce(options.lang, function (keys, lang) {
-                        return _.union(keys, _.keys(utils.flattenObject(existingTranslations[moduleName][lang])));
-                    }, perModuleFoundKeys[moduleName]);
                 return memo;
             }, {});
 
         var foundKeys =  _
-            .chain(perModuleFoundKeys)
-            .values()
-            .reduce(function (memo, keys) { return _.union(memo, keys); }, [])
-            .value();
+            .reduce(files, function (memo, file) {
+                return _.union(memo, utils.findKeys({content: grunt.file.read(file), path: file}));
+            }, []);
 
-        // check for hidden keys
         var allKeys = _
-            .chain(perModuleAllKeys)
-            .values()
-            .reduce(function (memo, keys) { return _.union(memo, keys); }, [])
-            .value();
-
-        var unusedKeys = _.difference(allKeys, foundKeys);
+            .reduce(options.lang, function (keys, lang) {
+                return _.union(keys, _.keys(utils.flattenObject(existingTranslations[lang])));
+            }, foundKeys);
 
         return new Q()
             .then(function () {
+                // check for hidden keys
+                var unusedKeys = _.difference(allKeys, foundKeys);
                 if (_.isEmpty(unusedKeys)){
                     return [];
                 }
@@ -115,26 +68,19 @@ module.exports = function (grunt) {
             })
             .then(function (discardedKeys) {
                 // TODO: discard keys
-                allModules.forEach(function (moduleName) {
-                    perModuleFoundKeys[moduleName] = _.difference(perModuleFoundKeys[moduleName], discardedKeys);
-                    perModuleAllKeys[moduleName] = _.difference(perModuleFoundKeys[moduleName], discardedKeys);
-                    discardedKeys.forEach(function (key) {
-                        options.lang.forEach(function (lang) {
-                            utils.deleteProperty(existingTranslations[moduleName][lang], key);
-                        });
+                discardedKeys.forEach(function (key) {
+                    options.lang.forEach(function (lang) {
+                        utils.deleteProperty(existingTranslations[lang], key);
                     });
                 });
                 allKeys = _.difference(allKeys, discardedKeys);
-                foundKeys = _.difference(allKeys, foundKeys);
             })
             .then(function () {
                 var hiddenKeys = _.filter(allKeys, function (key) {
                     return _
                         .chain(allKeys)
                         .without(key)
-                        .any(function (otherKey) {
-                            return otherKey.indexOf(key + '.') === 0; // start with
-                        })
+                        .any(function (otherKey) { return otherKey.indexOf(key + '.') === 0; /* start with */ })
                         .value();
                 });
 
@@ -146,137 +92,46 @@ module.exports = function (grunt) {
                     else {
                         grunt.fail.warn(format('Following keys are not accessible due to namespace usage: {}', keys));
                     }
-                    throw new Error();
                 }
             })
             .then(function () {
-                var doneAsking = new Q();
+                var stats = _
+                    .chain(options.lang)
+                    .map(function (lang) {
+                        var newTranslations;
 
-                // list keys used in multiple modules
-                var duplicatedKeys = _
-                    .chain(allKeys)
-                    .map(function (key) {
-                        return {
-                            modules: _.filter(allModules, function (moduleName) {
-                                return _.contains(perModuleAllKeys[moduleName], key);
-                            }),
-                            key: key
-                        };
-                    })
-                    .filter(function (item) {
-                        return item.modules.length > 1;
-                    })
-                    .value();
+                        var pathToJsonFile = format('public/{}/{}.json', options.dest, lang);
+                        var pathToJSFile = format('public/{}/{}.js', options.dest, lang);
 
-                // move duplicates to mainModule
-                _.chain(duplicatedKeys)
-                    .reduce(function (memo, item) {
-                        return memo.concat(_.map(item.modules, function (moduleName) { return {module: moduleName, key: item.key};  }));
-                    }, [])
-                    .groupBy(function (item) { return item.module; })
-                    .mapValues(function (items) {
-                        return _.pluck(items, 'key');
-                    })
-                    .pairs()
-                    .forEach(function (pair) {
-                        var moduleName = pair[0], keys = pair[1];
-                        // rm keys from module
-                        if (moduleName !== options.mainModule) {
-                            perModuleFoundKeys[moduleName] = _.difference(perModuleFoundKeys[moduleName], keys);
-                        }
-                        // add keys to `mainModule`
-                        perModuleFoundKeys[options.mainModule] = _.union(perModuleFoundKeys[options.mainModule] || [], keys);
-                    });
+                        newTranslations = _.merge({}, utils.nestify(foundKeys), existingTranslations[lang]);
 
-                var flattenedTranslations = utils.flattenObject(existingTranslations);
-
-                _.forEach(duplicatedKeys, function (item) {
-                    _.forEach(options.lang, function (lang) {
-                        var foundTranslations = _
-                            .chain(item.modules)
-                            .reduce(function (memo, moduleName) {
-                                var keyPath = format('{}.{}.{}', moduleName, lang, item.key);
-                                if (_.has(flattenedTranslations, keyPath) && !_.isEmpty(flattenedTranslations[keyPath])){
-                                    memo.push(flattenedTranslations[keyPath]);
-                                }
-                                return memo;
-                            }, [])
-                            .uniq()
-                            .value();
-
-                        // rm this translations since the have moved to mainModule
-                        _.forEach(item.modules, function(moduleName){
-                            utils.deleteProperty(existingTranslations[moduleName][lang], item.key);
-                        });
-
-                        if (foundTranslations.length <= 1){
-                            utils.assignProperty(existingTranslations[options.mainModule][lang], item.key, foundTranslations[0] || '');
-                        }
-                        else {
-                            // ask user witch translation should be used
-                            doneAsking = doneAsking
-                                .then(function () {
-                                    return askUserWhichTranslationToUse(item.key, foundTranslations, lang);
-                                })
-                                .then(function (keeped) {
-                                    utils.assignProperty(existingTranslations[options.mainModule][lang], item.key, keeped);
-                                });
-                        }
-                    });
-                });
-                return doneAsking;
-            })
-            .then(function () {
-                var report = _
-                    .chain(perModuleFoundKeys)
-                    .pairs()
-                    .reduce(function (memo, pair) {
-                        // create pairs for each language
-                        var moduleName = pair[0], foundKeys = pair[1];
-                        return memo.concat(_.map(options.lang, function (lang) { return [moduleName, foundKeys, lang];  }));
-                    }, [])
-                    .map(function (pair) {
-                        var moduleName = pair[0], foundKeys = pair[1], lang = pair[2], newTranslations;
-
-                        var pathToJsonFile = format('public/{}/{}/{}.json', moduleName, options.dest, lang);
-                        var pathToJSFile = format('public/{}/{}/{}.js', moduleName, options.dest, lang);
-
-                        newTranslations = _.merge({}, utils.nestify(foundKeys), existingTranslations[moduleName][lang]);
                         grunt.file.write(pathToJsonFile, JSON.stringify(newTranslations, null, 4));
                         grunt.file.write(pathToJSFile, utils.renderJS({
-                            moduleName: moduleName,
+                            moduleName: options.moduleName,
                             lang: lang,
-                            translations: newTranslations,
-                            moduleNamePrefix: options.moduleNamePrefix || ''
+                            translations: newTranslations
                         }));
-                        return [moduleName, utils.getStats(existingTranslations[moduleName][lang], foundKeys), lang];
+                        return [lang, utils.getStats(existingTranslations[lang], foundKeys)];
                     })
-                    .reduce(function (memo, pair) {
-                        var moduleName = pair[0], stats = pair[1], lang = pair[2];
-                        memo[moduleName] = memo[moduleName] || {};
-                        memo[moduleName][lang] = memo[moduleName].__stats = stats;
-                        return memo;
-                    }, {})
+                    .zipObject()
                     .value();
 
                 if (options.displayStats){
                     var Table = require('cli-table');
                     var statsTable = new Table({
-                        head: ['Module', 'lang', 'Used', 'New', 'Obsolete', 'Empty'],
+                        head: ['lang', 'Used', 'New', 'Obsolete', 'Empty'],
                         style: {compact: true}
                     });
-                    var modules = _.keys(report);
-                    _.forEach(modules, function (module, i) {
-                        var languages = report[module];
-                        _.forEach(options.lang, function (lang) {
-                            var stat = languages[lang];
-                            statsTable.push([module, lang, stat.used, stat.new, stat.obsolete, stat.empty]);
-                        });
 
-                        if (i < modules.length - 1){
-                            statsTable.push([]);
-                        }
-                    });
+                        _.forEach(options.lang, function (lang, i) {
+                            var stat = stats[lang];
+                            statsTable.push([lang, stat.used, stat.new, stat.obsolete, stat.empty]);
+
+                            if (i < options.lang.length - 1){
+                                statsTable.push([]);
+                            }
+                        });
+                    
                     grunt.log.ok('Statistics');
                     grunt.log.writeln(statsTable.toString());
                 }
@@ -293,9 +148,10 @@ module.exports = function (grunt) {
             lang: ['en'],
             dest: 'i18n',
             displayStats: true,
-            mainModule: 'core',
-            moduleNamePrefix: ''
+            moduleName: 'core'
         }, this.options() || {}, this.data || {});
-        return new Q(processTranslations(options)).done(this.async());
+
+        return new Q(processTranslations(options))
+            .done(this.async());
     });
 };
